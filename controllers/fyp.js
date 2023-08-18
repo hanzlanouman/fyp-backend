@@ -273,3 +273,30 @@ export const rejectFYP = async (req, res) => {
     if (connection) connection.end();
   }
 };
+
+export const getAvbSupervisors = async (req, res) => {
+  const pool = {
+    host: 'localhost',
+    user: 'fypdba',
+    password: 'fyp123',
+    database: 'testdb1',
+  };
+
+  let connection;
+
+  try {
+    connection = await mysql.createConnection(pool);
+    const [supervisors] = await connection.execute(
+      'SELECT * FROM Supervisor WHERE avbStatus = 1'
+    );
+
+    console.log('Available Supervisors: ', supervisors);
+
+    res.status(200).json({ supervisors });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while fetching data' });
+  } finally {
+    if (connection) connection.end();
+  }
+};
